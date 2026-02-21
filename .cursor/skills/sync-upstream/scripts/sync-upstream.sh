@@ -58,8 +58,9 @@ run git push origin "$TAG"
 if [[ "$MERGE_ORGHI" == true ]]; then
   echo "Running CI (pytest) on main..."
   if [[ "$DRY_RUN" == true ]]; then
-    echo "[dry-run] uv run pytest"
+    echo "[dry-run] uv sync --extra dev && uv run pytest"
   else
+    uv sync --extra dev
     if ! uv run pytest; then
       echo "Error: CI failed. Aborting merge into orghi-main."
       exit 1
