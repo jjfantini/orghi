@@ -1,0 +1,72 @@
+# Sync upstream/main into main, then orghi-main. Lives in orghi-main only (not in PRs).
+# Trigger: scheduled (daily) or manual.
+
+name: Sync Upstream
+
+on:
+  schedule:
+    - cron: "0 0 * * *"  # Daily at midnight UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Sync Python env
+        run: uv sync
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Add upstream remote
+        run: |
+          git remote add upstream https://github.com/HKUDS/nanobot.git || true
+          git fetch upstream
+
+      - name: Check if main is behind
+        id: behind
+        run: |
+          git checkout main
+          BEHIND=$(git rev-list main..upstream/main --count)
+          echo "behind=$BEHIND" >> $GITHUB_OUTPUT
+          if [[ "$BEHIND" -gt 0 ]]; then
+            echo "Main is $BEHIND commits behind upstream. Syncing..."
+          else
+            echo "Main is up to date with upstream."
+          fi
+
+      - name: Rebase main onto upstream
+        if: steps.behind.outputs.behind != '0'
+        run: |
+          git checkout main
+          git rebase upstream/main
+          git push --force-with-lease origin main
+
+      - name: Tag main
+        if: steps.behind.outputs.behind != '0'
+        run: |
+          TAG="orghi-sync-$(date -u +%Y%m%d-%H%M)"
+          git tag "$TAG"
+          git push origin "$TAG"
+
+      - name: Run CI on main
+        run: uv run pytest
+
+      - name: Merge main into orghi-main
+        run: |
+          git checkout orghi-main
+          git merge main -m "chore: sync from upstream"
+          git push origin orghi-main
