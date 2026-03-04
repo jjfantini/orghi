@@ -27,7 +27,11 @@ Nanobot (orghi fork) is an ultra-lightweight personal AI assistant framework. Se
 
 ### Non-obvious caveats
 
-- **LLM API key required**: The agent (`nanobot agent`) needs at least one LLM provider API key in `~/.nanobot/config.json`. Without it, you get "No API key configured." Set `OPENROUTER_API_KEY` as an env secret, then write it into the config: `python -c "import json,os; c=json.load(open(os.path.expanduser('~/.nanobot/config.json'))); c.setdefault('providers',{}).setdefault('openrouter',{})['apiKey']=os.environ['OPENROUTER_API_KEY']; json.dump(c,open(os.path.expanduser('~/.nanobot/config.json'),'w'),indent=2)"`
+- **LLM API key required**: The agent (`nanobot agent`) needs at least one LLM provider API key in `~/.nanobot/config.json`. The `OPENROUTER_API_KEY` env secret is available. Before running the agent, initialize config and inject the key:
+  ```
+  nanobot onboard  # idempotent, creates config if missing
+  python -c "import json,os; c=json.load(open(os.path.expanduser('~/.nanobot/config.json'))); c.setdefault('providers',{}).setdefault('openrouter',{})['apiKey']=os.environ['OPENROUTER_API_KEY']; json.dump(c,open(os.path.expanduser('~/.nanobot/config.json'),'w'),indent=2)"
+  ```
 - **Telegram send_only tests hang**: `tests/orghi/test_telegram_send_only.py` hangs indefinitely in CI/cloud environments (async polling issue). Skip with `--ignore=tests/orghi/test_telegram_send_only.py`.
 - **Matrix tests**: 5 pre-existing failures in `tests/test_matrix_channel.py` due to mock signature mismatches. These are upstream issues.
 - **Ruff lint**: 36 pre-existing lint warnings. These are in the existing codebase.
