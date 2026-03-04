@@ -1,3 +1,5 @@
+<!-- Test comment: verifying PR workflow from orghi fork -->
+
 <div align="center">
   <img src="nanobot_logo.png" alt="nanobot" width="500">
   <h1>nanobot: Ultra-Lightweight Personal AI Assistant</h1>
