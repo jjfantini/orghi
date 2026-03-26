@@ -1,3 +1,4 @@
+<!-- This is a test comment added by Orghi to validate the cloud mode development workflow. -->
 <div align="center">
   <img src="nanobot_logo.png" alt="nanobot" width="500">
   <h1>nanobot: Ultra-Lightweight Personal AI Assistant</h1>
