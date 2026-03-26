@@ -39,6 +39,8 @@ Always flow upstream/main into origin/main, then into origin/orghi-main to keep 
 
 - `orghi-main` has a deployment action that deploys orghi (nanobot) to a VPS on Digital Ocean via SSH
 - Every push to `orghi-main` deploys to the droplet
+- The project is deployed to the droplet at `/opt/orghi`.
+- The nanobot workspace is located at `/root/.nanobot/`.
 - Development often happens in Cursor IDE on the remote droplet via SSH
 
 # Commands
