@@ -7,8 +7,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from nanobot.bus.queue import MessageBus
-from nanobot.channels.telegram import TelegramChannel
-from nanobot.config.schema import TelegramConfig
+from nanobot.channels.telegram import TelegramChannel, TelegramConfig
 
 
 @dataclass
@@ -127,7 +126,8 @@ async def test_start_normal_adds_handlers_and_polls(
     handler_calls = [
         c for c in tracker.add_handler_calls if c[0] == "add_handler"
     ]
-    assert len(handler_calls) == 4
+    # Command + message handlers registered for polling mode
+    assert len(handler_calls) == 7
     assert len(tracker.start_polling_called) == 1
 
 
