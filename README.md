@@ -1725,3 +1725,5 @@ PRs welcome! The codebase is intentionally small and readable. 🤗
 <p align="center">
   <sub>nanobot is for educational, research, and technical exchange purposes only</sub>
 </p>
+
+<!-- This is a test comment to verify PR workflow - added by jjfantini -->
